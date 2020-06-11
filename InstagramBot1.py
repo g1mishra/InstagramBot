@@ -42,13 +42,14 @@ def likeAndCommentPosts(driver):
         post = driver.find_element_by_xpath("/html/body/div[4]/div[2]/div/article/div[1]/div/div/div[2]")
         actionChains = ActionChains(driver)
         actionChains.double_click(post).perform()
-        # nextPost 
+        # select comment input
         driver.find_element_by_css_selector(".Ypffh").click()
         comment = driver.find_element_by_css_selector(".Ypffh")
         comment.send_keys("Hey! Nice Post")
         time.sleep(0.5)
         comment.send_keys(Keys.ENTER)
         time.sleep(2)
+        #next post 
         driver.find_element_by_css_selector("._65Bje").click()
 
 
