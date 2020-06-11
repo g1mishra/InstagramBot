@@ -1,0 +1,2 @@
+def getPassword():
+    return "yourpassword"
