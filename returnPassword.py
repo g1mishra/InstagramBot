@@ -1,2 +1,2 @@
 def getPassword():
-    return "yourpassword"
+    return "password"

@@ -1,31 +1,40 @@
 from selenium import webdriver
+from webdriver_manager.firefox import GeckoDriverManager
+
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.action_chains import ActionChains
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.common.by import By
+from selenium.common.exceptions import TimeoutException
 import time
 from returnPassword import getPassword
 
-def loginAndSeacrh():
-    driver = webdriver.Firefox()
-    driver.get("https://instagram.com")
-    time.sleep(3)
+delay = 10
 
-    username = driver.find_element_by_xpath("/html/body/div[1]/section/main/article/div[2]/div[1]/div/form/div[2]/div/label/input")
-    username.send_keys("yourusername")
-    password = driver.find_element_by_xpath("/html/body/div[1]/section/main/article/div[2]/div[1]/div/form/div[3]/div/label/input")
+def loginAndSeacrh():
+    # driver = webdriver.Firefox()
+    driver = webdriver.Firefox(executable_path=GeckoDriverManager().install())
+    driver.get("https://instagram.com")
+
+    time.sleep(5)
+
+    username = driver.find_element_by_css_selector("form#loginForm input[type='text']")
+    username.send_keys("usernam")
+    password = driver.find_element_by_css_selector("form#loginForm input[type='password']")
     password.send_keys(getPassword()) # getPasseord() : return "password"
 
     # hit enter to login
     password.send_keys(Keys.ENTER)
-
     time.sleep(5)
 
-    driver.find_element_by_xpath("/html/body/div[1]/section/main/div/div/div/div/button").click()
+    WebDriverWait(driver, delay).until(EC.presence_of_element_located((By.CSS_SELECTOR, "button[type]")))
+    driver.find_elements_by_css_selector("button[type]")[-1].click()
 
-    time.sleep(5)
+    WebDriverWait(driver, delay).until(EC.presence_of_element_located((By.CSS_SELECTOR, "button[tabindex]")))
+    driver.find_elements_by_css_selector("button[tabindex]")[-1].click()
 
-    driver.find_element_by_xpath("/html/body/div[4]/div/div/div/div[3]/button[2]").click()
-
-    search = driver.find_element_by_xpath('/html/body/div[1]/section/nav/div[2]/div/div/div[2]/input')
+    search = driver.find_element_by_css_selector('input[placeholder]')
     search.send_keys("#pythonprogramming")
 
     time.sleep(5)
@@ -35,11 +44,12 @@ def loginAndSeacrh():
     likeAndCommentPosts(driver)
 
 def likeAndCommentPosts(driver):
-    time.sleep(3)
-    driver.find_element_by_xpath("/html/body/div[1]/section/main/article/div[1]/div/div/div[1]/div[1]").click()
+    time.sleep(5)
+    driver.find_elements_by_css_selector("article > div > div >div >div > div")[0].click()
     while True :
         time.sleep(2)
-        post = driver.find_element_by_xpath("/html/body/div[4]/div[2]/div/article/div[1]/div/div/div[2]")
+        WebDriverWait(driver, delay).until(EC.presence_of_element_located((By.CSS_SELECTOR, "div[role='button'] img[srcset]")))
+        post = driver.find_element_by_css_selector("div[role='button'] img[srcset]")
         actionChains = ActionChains(driver)
         actionChains.double_click(post).perform()
         # select comment input
